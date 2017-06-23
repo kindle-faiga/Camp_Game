@@ -1,17 +1,12 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
 
 public class ObjectLaider : EditorWindow
 {
-	private GameObject parent;
-	private GameObject prefab;
-	private int numX = 1;
-	private int numY = 1;
-	private int numZ = 1;
-	private float intervalX = 1;
-	private float intervalY = 1;
-	private float intervalZ = 1;
+    private string parentName = "";
+	private GameObject baseObject;
+    private Vector3 scale = Vector3.one;
+	private float interval = 0;
 
 	[MenuItem("GameObject/Object Laider")]
 	static void Init()
@@ -19,14 +14,9 @@ public class ObjectLaider : EditorWindow
 		EditorWindow.GetWindow<ObjectLaider>(true, "Object Laider");
 	}
 
-	void OnEnable()
-	{
-		if (Selection.gameObjects.Length > 0) parent = Selection.gameObjects[0];
-	}
-
 	void OnSelectionChange()
 	{
-		if (Selection.gameObjects.Length > 0) prefab = Selection.gameObjects[0];
+		if (Selection.gameObjects.Length > 0) baseObject = Selection.gameObjects[0];
 		Repaint();
 	}
 
@@ -34,20 +24,11 @@ public class ObjectLaider : EditorWindow
 	{
 		try
 		{
-			parent = EditorGUILayout.ObjectField("Parent", parent, typeof(GameObject), true) as GameObject;
-			prefab = EditorGUILayout.ObjectField("Prefab", prefab, typeof(GameObject), true) as GameObject;
+            parentName = EditorGUILayout.TextField("Parent Name", parentName);
+			baseObject = EditorGUILayout.ObjectField("Object", baseObject, typeof(GameObject), true) as GameObject;
 
-			GUILayout.Label("X : ", EditorStyles.boldLabel);
-			numX = int.Parse(EditorGUILayout.TextField("num", numX.ToString()));
-			intervalX = int.Parse(EditorGUILayout.TextField("interval", intervalX.ToString()));
-
-			GUILayout.Label("Y : ", EditorStyles.boldLabel);
-			numY = int.Parse(EditorGUILayout.TextField("num", numY.ToString()));
-			intervalY = int.Parse(EditorGUILayout.TextField("interval", intervalY.ToString()));
-
-			GUILayout.Label("Z : ", EditorStyles.boldLabel);
-			numZ = int.Parse(EditorGUILayout.TextField("num", numZ.ToString()));
-			intervalZ = int.Parse(EditorGUILayout.TextField("interval", intervalZ.ToString()));
+            scale = EditorGUILayout.Vector3Field("Scale", scale);
+            interval = int.Parse(EditorGUILayout.TextField("Interval", interval.ToString()));
 
 			GUILayout.Label("", EditorStyles.boldLabel);
 			if (GUILayout.Button("Create")) Create();
@@ -57,30 +38,35 @@ public class ObjectLaider : EditorWindow
 
 	private void Create()
 	{
-		if (prefab == null) return;
+        if (baseObject != null)
+        {
+            if (parentName == "") parentName = "Empty";
 
-		int count = 0;
-		Vector3 pos;
+            GameObject parentObject;
 
-		pos.x = -(numX - 1) * intervalX / 2;
-		for (int x = 0; x < numX; x++)
-		{
-			pos.y = -(numY - 1) * intervalY / 2;
-			for (int y = 0; y < numY; y++)
-			{
-				pos.z = -(numZ - 1) * intervalZ / 2;
-				for (int z = 0; z < numZ; z++)
-				{
-					GameObject obj = Instantiate(prefab, pos, Quaternion.identity) as GameObject;
-					obj.name = prefab.name + count++;
-					if (parent) obj.transform.parent = parent.transform;
-					Undo.RegisterCreatedObjectUndo(obj, "Create Buoys");
+            if (GameObject.Find(parentName) != null)
+            {
+                parentObject = GameObject.Find(parentName);
+            }
+            else
+            {
+                parentObject = new GameObject(parentName);
+            }
 
-					pos.z += intervalZ;
-				}
-				pos.y += intervalY;
-			}
-			pos.x += intervalX;
-		}
+            for (int i = 0; i < scale.x; ++i)
+            {
+                for (int j = 0; j < scale.y; ++j)
+                {
+                    for (int k = 0; k < scale.z; ++k)
+                    {
+                        Vector3 pos = new Vector3(i * interval, j * interval, k * interval);
+                        GameObject obj = Instantiate(baseObject, pos, Quaternion.identity) as GameObject;
+                        obj.name = baseObject.name;
+                        obj.transform.parent = parentObject.transform;
+                        Undo.RegisterCreatedObjectUndo(obj, "Object Laider");
+                    }
+                }
+            }
+        }
 	}
 }
