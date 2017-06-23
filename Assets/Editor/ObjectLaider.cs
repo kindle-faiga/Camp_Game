@@ -8,7 +8,7 @@ public class ObjectLaider : EditorWindow
     private Vector3 scale = Vector3.one;
 	private float interval = 0;
 
-	[MenuItem("GameObject/Object Laider")]
+	[MenuItem("MyTools/Object Laider")]
 	static void Init()
 	{
 		EditorWindow.GetWindow<ObjectLaider>(true, "Object Laider");
