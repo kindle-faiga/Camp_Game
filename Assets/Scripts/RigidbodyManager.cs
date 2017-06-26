@@ -19,5 +19,10 @@ namespace CampGame
         {
             rigidBody.velocity = distance*speed;
         }
+
+        public void Stop()
+        {
+            rigidBody.velocity = Vector3.zero;
+        }
     }
 }

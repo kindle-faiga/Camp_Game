@@ -16,7 +16,7 @@ namespace CampGame
 
         private void Update()
         {
-            if (!bulletManager.GetIsActive() && Input.GetButton("Shot"))
+            if (!bulletManager.GetIsActive() && Input.GetButtonDown("Shot"))
             {
                 StartCoroutine(bulletManager.Shot());
             }

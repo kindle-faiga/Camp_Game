@@ -18,15 +18,16 @@ namespace CampGame
         public IEnumerator Shot()
         {
             isActive = true;
-            defaultPos = transform.position;
+            transform.localPosition = defaultPos;
             yield return new WaitForSeconds(aliveTime);
             isActive = false;
-            transform.position = defaultPos;
+            rigidbodyManager.Stop();
         }
 
         private void Start()
         {
             rigidbodyManager = GetComponent<RigidbodyManager>();
+			defaultPos = transform.localPosition;
         }
 
         private void FixedUpdate()
