@@ -11,13 +11,15 @@ namespace CampGame
         private Rigidbody rigidBody;
         private float waitTime = 2.0f;
         private float moveTime = 5.0f; 
-        private float deleteTime = 5.0f;
+        private float deleteTime = 10.0f;
+        private Vector3 defaultPosition;
 
         private void Start()
         {
             render = GetComponent<Renderer>();
             rigidBody = GetComponent<Rigidbody>();
             rigidBody.isKinematic = true;
+            defaultPosition = transform.localPosition;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -39,7 +41,16 @@ namespace CampGame
 		{
             yield return new WaitForSeconds(waitTime);
             rigidBody.isKinematic = false;
-            Destroy(gameObject, deleteTime);
+            StartCoroutine(ResetPos());
+		}
+
+		private IEnumerator ResetPos()
+		{
+            yield return new WaitForSeconds(deleteTime);
+            rigidBody.isKinematic = true;
+            transform.localPosition = defaultPosition;
+            Material material = Resources.Load("Materials/Block_Black") as Material;
+            render.material = material;
 		}
     }
 }
