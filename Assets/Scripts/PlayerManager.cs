@@ -7,18 +7,24 @@ namespace CampGame
     {
         private RigidbodyManager rigidbodyManager;
 		private Transform shotPoint;
+        private Transform groundPoint;
         private BulletManager bulletManager;
+
+        private bool isGround = true;
 
         private void Start()
         {
             rigidbodyManager = GetComponent<RigidbodyManager>();
             shotPoint = transform.GetChild(0);
+            groundPoint = transform.GetChild(1);
             GameObject bullet = Instantiate(Resources.Load("Prefabs/Shot", typeof(GameObject))) as GameObject;
             bulletManager = bullet.GetComponentInChildren<BulletManager>();
         }
 
         private void Update()
         {
+            isGround = Physics.Linecast(transform.position, groundPoint.position);
+
             if (!bulletManager.GetIsActive() && Input.GetButtonDown("Shot"))
             {
                 StartCoroutine(bulletManager.Shot(shotPoint.position, transform.eulerAngles.y));
@@ -53,9 +59,16 @@ namespace CampGame
 				}
             }
 
-            Vector3 distance = new Vector3(x, 0, z);
+            if (isGround)
+            {
+                Vector3 distance = new Vector3(x, 0, z);
 
-            rigidbodyManager.Move(distance);
+                rigidbodyManager.Move(distance);
+            }
+            else
+            {
+                rigidbodyManager.Stop();
+            }
         }
     }
 }

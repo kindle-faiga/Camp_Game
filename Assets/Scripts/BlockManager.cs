@@ -10,8 +10,7 @@ namespace CampGame
         private Renderer render;
         private Rigidbody rigidBody;
         private float waitTime = 2.0f;
-        private float moveTime = 5.0f; 
-        private float deleteTime = 10.0f;
+        private float resetTime = 10.0f;
         private Vector3 defaultPosition;
 
         private void Start()
@@ -46,7 +45,7 @@ namespace CampGame
 
 		private IEnumerator ResetPos()
 		{
-            yield return new WaitForSeconds(deleteTime);
+            yield return new WaitForSeconds(resetTime);
             rigidBody.isKinematic = true;
             transform.localPosition = defaultPosition;
             Material material = Resources.Load("Materials/Block_Black") as Material;
