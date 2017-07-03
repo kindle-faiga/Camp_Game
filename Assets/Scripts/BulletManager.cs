@@ -10,31 +10,34 @@ namespace CampGame
         private float aliveTime = 1.0f;
 
         private bool isActive = false;
-        private Vector3 defaultPos;
+        private float rotation = 0;
         private RigidbodyManager rigidbodyManager;
+
+		private void Start()
+		{
+			rigidbodyManager = GetComponent<RigidbodyManager>();
+		}
 
         public bool GetIsActive() { return isActive; }
         public void SetIsActive(bool _isActive) { isActive = _isActive; }
-        public IEnumerator Shot()
+
+        public IEnumerator Shot(Vector3 position, float _rotation)
         {
             isActive = true;
-            transform.localPosition = defaultPos;
+            transform.position = position;
+            rotation = _rotation;
             yield return new WaitForSeconds(aliveTime);
             isActive = false;
             rigidbodyManager.Stop();
-        }
-
-        private void Start()
-        {
-            rigidbodyManager = GetComponent<RigidbodyManager>();
-			defaultPos = transform.localPosition;
         }
 
         private void FixedUpdate()
         {
             if (isActive)
             {
-                rigidbodyManager.Move(Vector3.forward);
+                float sin = Mathf.Sin(Mathf.Deg2Rad * rotation);
+                float cos = Mathf.Cos(Mathf.Deg2Rad * rotation);
+                rigidbodyManager.Move(new Vector3(sin,0,cos));
             }
         }
     }
