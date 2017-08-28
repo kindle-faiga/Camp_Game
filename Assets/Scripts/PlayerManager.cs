@@ -9,6 +9,8 @@ namespace CampGame
         public static readonly float THRESHOLD = 0.001f;
         [SerializeField]
         private float shotTime = 1.0f;
+        [SerializeField]
+        private int id = 0;
         private RigidbodyManager rigidbodyManager;
 		private Transform shotPoint;
         private Transform groundPoint;
@@ -26,11 +28,13 @@ namespace CampGame
             bulletManager = bullet.GetComponentInChildren<BulletManager>();
         }
 
+        public int GetId() { return id; }
+
         private void Update()
         {
             isGround = Physics.Linecast(transform.position, groundPoint.position);
 
-            if (!bulletManager.GetIsActive() && Input.GetButtonDown("Shot"))
+            if (!bulletManager.GetIsActive() && Input.GetButtonDown("Shot"+ id.ToString()))
             {
                 StartCoroutine(bulletManager.Shot(shotPoint.position, transform.eulerAngles.y));
                 StartCoroutine(WaitForShot());
@@ -39,8 +43,8 @@ namespace CampGame
 
         private void FixedUpdate()
         {
-            float x = Input.GetAxis("Horizontal");
-            float z = Input.GetAxis("Vertical");
+            float x = Input.GetAxis("Horizontal"+id.ToString());
+            float z = Input.GetAxis("Vertical"+ id.ToString());
 
             if (!isShot && (THRESHOLD < Mathf.Abs(x) || THRESHOLD < Mathf.Abs(z)))
 			{
