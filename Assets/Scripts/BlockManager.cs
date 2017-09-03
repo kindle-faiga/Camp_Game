@@ -8,10 +8,13 @@ namespace CampGame
     public class BlockManager : MonoBehaviour
     {
         private Renderer render;
+        private Material defaultMaterial;
         private Rigidbody rigidBody;
         private float waitTime = 2.0f;
         private float resetTime = 10.0f;
         private Vector3 defaultPosition;
+        [SerializeField]
+        private PlayerManager playerManager;
 
         private void Start()
         {
@@ -19,6 +22,7 @@ namespace CampGame
             rigidBody = GetComponent<Rigidbody>();
             rigidBody.isKinematic = true;
             defaultPosition = transform.localPosition;
+            defaultMaterial = render.material;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -30,16 +34,35 @@ namespace CampGame
                 if (b.GetIsActive())
                 {
                     StartCoroutine(MoveUp());
-                    Material material = Resources.Load("Materials/Block_Red") as Material;
+                    int id = b.GetId();
+                    Material material = Resources.Load("Materials/Block_Player"+id) as Material;
                     render.material = material;
                 }
             }
+
+            if(other.tag.Equals("Dead"))
+            {
+                playerManager = other.GetComponentInParent<PlayerManager>();
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+			if (other.tag.Equals("Dead"))
+			{
+				playerManager = null;
+			}
         }
 
 		private IEnumerator MoveUp()
 		{
             yield return new WaitForSeconds(waitTime);
             rigidBody.isKinematic = false;
+            if(playerManager != null)
+            {
+                playerManager.SetIsDead();
+                playerManager.transform.position = new Vector3(transform.position.x, playerManager.transform.position.y, transform.position.z);
+            }
             StartCoroutine(ResetPos());
 		}
 
@@ -48,8 +71,7 @@ namespace CampGame
             yield return new WaitForSeconds(resetTime);
             rigidBody.isKinematic = true;
             transform.localPosition = defaultPosition;
-            Material material = Resources.Load("Materials/Block_Black") as Material;
-            render.material = material;
+            render.material = defaultMaterial;
 		}
     }
 }

@@ -9,6 +9,7 @@ namespace CampGame
         [SerializeField]
         private float aliveTime = 1.0f;
 
+        private int id = 1;
         private bool isActive = false;
         private float rotation = 0;
         private RigidbodyManager rigidbodyManager;
@@ -18,6 +19,8 @@ namespace CampGame
 			rigidbodyManager = GetComponent<RigidbodyManager>();
 		}
 
+        public int GetId() { return id; }
+        public void SetId(int _id) { id = _id; }
         public bool GetIsActive() { return isActive; }
         public void SetIsActive(bool _isActive) { isActive = _isActive; }
 
