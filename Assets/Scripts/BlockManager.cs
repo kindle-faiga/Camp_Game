@@ -10,7 +10,7 @@ namespace CampGame
         private Renderer render;
         private Material defaultMaterial;
         private Rigidbody rigidBody;
-        private float waitTime = 2.0f;
+        private float waitTime = 0.5f;
         private float resetTime = 10.0f;
         private Vector3 defaultPosition;
         [SerializeField]

@@ -13,6 +13,7 @@ namespace CampGame
 		private float deadTime = 2.0f;
         [SerializeField]
         private int id = 0;
+        private HealthManager healthManager;
         private RigidbodyManager rigidbodyManager;
 		private Transform shotPoint;
         private Transform groundPoint;
@@ -33,6 +34,8 @@ namespace CampGame
             GameObject bullet = Instantiate(Resources.Load("Prefabs/Shot", typeof(GameObject))) as GameObject;
             bulletManager = bullet.GetComponentInChildren<BulletManager>();
             bulletManager.SetId(id);
+
+            healthManager = GameObject.Find("UI/Panel/Player" + id).GetComponent<HealthManager>();
         }
 
         public int GetId() { return id; }
@@ -123,9 +126,16 @@ namespace CampGame
         public IEnumerator WaitForDead()
         {
 			isDead = true;
+            if(0 < healthManager.GetHp())
+            {
+                healthManager.Damage();
+            }
             yield return new WaitForSeconds(deadTime);
-            transform.position = defaultPosition;
-            isDead = false;
+            if (0 < healthManager.GetHp())
+            {
+                transform.position = defaultPosition;
+                isDead = false;
+            }
         }
     }
 }
