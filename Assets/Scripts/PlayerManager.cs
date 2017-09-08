@@ -11,6 +11,7 @@ namespace CampGame
         private float shotTime = 1.0f;
 		[SerializeField]
 		private float deadTime = 2.0f;
+        private float respornTime = 0.5f;
         [SerializeField]
         private int id = 0;
         private HealthManager healthManager;
@@ -20,10 +21,11 @@ namespace CampGame
         private BulletManager bulletManager;
 
         private Vector3 defaultPosition;
-
+        private bool isStart = false;
 		private bool isGround = true;
         private bool isShot = false;
         private bool isDead = false;
+        private bool isResporn = false;
 
         private void Start()
         {
@@ -38,6 +40,7 @@ namespace CampGame
             healthManager = GameObject.Find("UI/Panel/Player" + id).GetComponent<HealthManager>();
         }
 
+        public void SetStart() { isStart = true; }
         public int GetId() { return id; }
         public bool GetISDead() { return isDead; }
         public void SetIsDead()
@@ -47,9 +50,16 @@ namespace CampGame
 
         private void Update()
         {
-            isGround = Physics.Linecast(transform.position, groundPoint.position, LayerMask.GetMask("Ground"));
+            if (isResporn)
+            {
+                isGround = true;
+            }
+            else
+            {
+                isGround = Physics.Linecast(transform.position, groundPoint.position, LayerMask.GetMask("Ground"));
+            }
 
-            if (!isDead && !bulletManager.GetIsActive() && Input.GetButtonDown("Shot"+ id.ToString()))
+            if (isStart && !isDead && !bulletManager.GetIsActive() && Input.GetButtonDown("Shot"+ id.ToString()))
             {
                 StartCoroutine(bulletManager.Shot(shotPoint.position, transform.eulerAngles.y));
                 StartCoroutine(WaitForShot());
@@ -135,7 +145,16 @@ namespace CampGame
             {
                 transform.position = defaultPosition;
                 isDead = false;
+                isResporn = true;
+                StartCoroutine(WaitForResporn());
             }
+        }
+
+        private IEnumerator WaitForResporn()
+        {
+            yield return new WaitForSeconds(respornTime);
+
+            isResporn = false;
         }
     }
 }

@@ -3,27 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthManager : MonoBehaviour 
+namespace CampGame
 {
-    private List<Image> images = new List<Image>();
-    private int hp;
-
-	void Start () 
+    public class HealthManager : MonoBehaviour
     {
-        foreach(Image image in GetComponentsInChildren<Image>())
+        private List<Image> images = new List<Image>();
+        private int hp;
+
+        private GameManager gameManager;
+        private Text text;
+
+        void Start()
         {
-            if(image.name.Equals("Hp"))images.Add(image);
+            foreach (Image image in GetComponentsInChildren<Image>())
+            {
+                if (image.name.Equals("Hp")) images.Add(image);
+            }
+
+            hp = images.Count;
+
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+            text = transform.FindChild("Rank").GetComponent<Text>();
+            text.enabled = false;
         }
 
-        hp = images.Count;
-	}
+        public int GetHp() { return hp; }
 
-    public int GetHp() { return hp; }
+        public void Damage()
+        {
+            --hp;
 
-    public void Damage()
-    {
-        --hp;
+            images[hp].enabled = false;
 
-        images[hp].enabled = false;
+            if(hp == 0)
+            {
+                text.enabled = true;
+                text.text = gameManager.GetDeadCount().ToString();
+            }
+        }
     }
 }
