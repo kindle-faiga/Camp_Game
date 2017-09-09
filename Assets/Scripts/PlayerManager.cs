@@ -64,6 +64,38 @@ namespace CampGame
                 StartCoroutine(bulletManager.Shot(shotPoint.position, transform.eulerAngles.y));
                 StartCoroutine(WaitForShot());
             }
+
+            switch(id)
+            {
+                case 1:
+                    if(Input.GetKeyDown(KeyCode.Q))
+                    {
+						transform.position = defaultPosition;
+						isDead = false;
+                    }
+                    break;
+                case 2:
+                    if (Input.GetKeyDown(KeyCode.W))
+					{
+						transform.position = defaultPosition;
+						isDead = false;
+					}
+					break;
+				case 3:
+                    if (Input.GetKeyDown(KeyCode.E))
+					{
+						transform.position = defaultPosition;
+						isDead = false;
+					}
+					break;
+				case 4:
+                    if (Input.GetKeyDown(KeyCode.R))
+					{
+						transform.position = defaultPosition;
+						isDead = false;
+					}
+					break;
+            }
         }
 
         private void FixedUpdate()

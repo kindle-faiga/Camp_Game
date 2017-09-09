@@ -13,6 +13,8 @@ namespace CampGame
         [SerializeField]
         private float startTime = 1.0f;
 		[SerializeField]
+		private float size = 5.0f;
+		[SerializeField]
         private Vector3 vectol = new Vector3(1,0,0);
         private bool isStart = false;
 
@@ -45,7 +47,7 @@ namespace CampGame
 
             yield return new WaitForSeconds(2.0f);
 
-            boxCollider.size = new Vector3(1,1,5);
+            boxCollider.size = new Vector3(1,1,size);
         }
     }
 }
