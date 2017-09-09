@@ -11,12 +11,27 @@ namespace CampGame
         private PlayerManager[] playerManager;
         [SerializeField]
         private Text[] texts;
+		[SerializeField]
+		private Text[] ranks;
 
         private int deadCount = 5;
+        private int deadNum = 3;
+        private int rankCount = 9;
 
-        public int GetDeadCount()
+        public int GetDeadCount(int id)
         {
             --deadCount;
+
+            --deadNum;
+            rankCount -= id;
+
+            if(deadNum <= 0)
+            {
+                ranks[rankCount].enabled = true;
+                ranks[rankCount].text = "1";
+                texts[4].enabled = true;
+                texts[4].text = "P" + (rankCount + 1) + " Win!";
+            }
 
             return deadCount;
         }

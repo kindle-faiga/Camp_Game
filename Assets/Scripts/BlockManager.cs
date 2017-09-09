@@ -11,7 +11,8 @@ namespace CampGame
         private Material defaultMaterial;
         private Rigidbody rigidBody;
         private float waitTime = 0.5f;
-        private float resetTime = 10.0f;
+        private float resetTime = 6f;
+        private bool isDead = false;
         private Vector3 defaultPosition;
         [SerializeField]
         private PlayerManager playerManager;
@@ -27,7 +28,15 @@ namespace CampGame
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.tag.Equals("Bullet"))
+            if(other.tag.Equals("TimeOver"))
+            {
+                isDead = true;
+                StartCoroutine(MoveUp());
+				Material material = Resources.Load("Materials/Block_Dead") as Material;
+				render.material = material;
+            }
+
+            if (other.tag.Equals("Bullet") && !isDead)
             {
                 BulletManager b = other.GetComponent<BulletManager>();
 
@@ -69,9 +78,12 @@ namespace CampGame
 		private IEnumerator ResetPos()
 		{
             yield return new WaitForSeconds(resetTime);
-            rigidBody.isKinematic = true;
-            transform.localPosition = defaultPosition;
-            render.material = defaultMaterial;
+            if (!isDead)
+            {
+                rigidBody.isKinematic = true;
+                transform.localPosition = defaultPosition;
+                render.material = defaultMaterial;
+            }
 		}
     }
 }

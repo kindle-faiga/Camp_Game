@@ -7,9 +7,10 @@ namespace CampGame
 {
     public class HealthManager : MonoBehaviour
     {
+        [SerializeField]
+        private int id;
         private List<Image> images = new List<Image>();
         private int hp;
-
         private GameManager gameManager;
         private Text text;
 
@@ -38,7 +39,7 @@ namespace CampGame
             if(hp == 0)
             {
                 text.enabled = true;
-                text.text = gameManager.GetDeadCount().ToString();
+                text.text = gameManager.GetDeadCount(id).ToString();
             }
         }
     }
