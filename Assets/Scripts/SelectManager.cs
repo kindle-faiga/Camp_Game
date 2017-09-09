@@ -11,7 +11,7 @@ public class SelectManager : MonoBehaviour
     {
 		
 	}
-
+    /*
     private void FixedUpdate()
     {
         float x = Input.GetAxis("Horizontal" + id.ToString()) * 0.1f;
@@ -19,4 +19,5 @@ public class SelectManager : MonoBehaviour
 
         transform.position += new Vector3(x, y, 0);
     }
+    */
 }

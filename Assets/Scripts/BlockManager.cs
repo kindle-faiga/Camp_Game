@@ -16,9 +16,11 @@ namespace CampGame
         private Vector3 defaultPosition;
         [SerializeField]
         private PlayerManager playerManager;
+        private AudioSource[] sources;
 
         private void Start()
         {
+            sources = gameObject.GetComponents<AudioSource>();
             render = GetComponent<Renderer>();
             rigidBody = GetComponent<Rigidbody>();
             rigidBody.isKinematic = true;
@@ -65,7 +67,9 @@ namespace CampGame
 
 		private IEnumerator MoveUp()
 		{
+            sources[0].Play();
             yield return new WaitForSeconds(waitTime);
+            sources[1].Play();
             rigidBody.isKinematic = false;
             if(playerManager != null)
             {

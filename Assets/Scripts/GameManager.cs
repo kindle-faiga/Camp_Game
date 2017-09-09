@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace CampGame
 {
@@ -10,9 +11,12 @@ namespace CampGame
         [SerializeField]
         private PlayerManager[] playerManager;
         [SerializeField]
-        private Text[] texts;
+        private Image[] images;
+		[SerializeField]
+		private Image[] rankImages;
 		[SerializeField]
 		private Text[] ranks;
+        private AudioSource[] sources;
 
         private int deadCount = 5;
         private int deadNum = 3;
@@ -29,8 +33,7 @@ namespace CampGame
             {
                 ranks[rankCount].enabled = true;
                 ranks[rankCount].text = "1";
-                texts[4].enabled = true;
-                texts[4].text = "P" + (rankCount + 1) + " Win!";
+                StartCoroutine(WaitForEnd());
             }
 
             return deadCount;
@@ -38,29 +41,42 @@ namespace CampGame
 
         IEnumerator Start()
         {
-            foreach (Text t in texts)
+            sources = gameObject.GetComponents<AudioSource>();
+
+            foreach (Image i in images)
 			{
-                t.enabled = false;
+                i.enabled = false;
 			}
 
-            yield return new WaitForSeconds(2.0f);
+			foreach (Image ri in rankImages)
+			{
+				ri.enabled = false;
+			}
 
-            texts[0].enabled = true;
+            yield return new WaitForSeconds(3.0f);
 
-			yield return new WaitForSeconds(1.0f);
-
-            texts[0].enabled = false;
-			texts[1].enabled = true;
-
-			yield return new WaitForSeconds(1.0f);
-
-			texts[1].enabled = false;
-			texts[2].enabled = true;
+			sources[2].Play();
+            images[0].enabled = true;
 
 			yield return new WaitForSeconds(1.0f);
 
-			texts[2].enabled = false;
-			texts[3].enabled = true;
+            sources[2].Play();
+            images[0].enabled = false;
+			images[1].enabled = true;
+
+			yield return new WaitForSeconds(1.0f);
+
+            sources[2].Play();
+			images[1].enabled = false;
+			images[2].enabled = true;
+
+			yield return new WaitForSeconds(1.0f);
+
+            sources[2].Play();
+			images[2].enabled = false;
+			images[3].enabled = true;
+
+            sources[0].Play();
 
             foreach(PlayerManager p in playerManager)
             {
@@ -69,7 +85,20 @@ namespace CampGame
 
 			yield return new WaitForSeconds(0.5f);
 
-			texts[3].enabled = false;
+			images[3].enabled = false;
 		}
+
+        IEnumerator WaitForEnd()
+        { 
+            yield return new WaitForSeconds(0.5f);
+			
+            sources[1].Play();
+
+            rankImages[rankCount].enabled = true;
+
+            yield return new WaitForSeconds(5.0f);
+
+            SceneManager.LoadScene("Title");
+        }
     }
 }

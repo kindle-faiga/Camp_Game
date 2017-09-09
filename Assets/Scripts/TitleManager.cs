@@ -4,12 +4,26 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TitleManager : MonoBehaviour 
-{	
+{
+	private AudioSource[] sources;
+
+	void Start()
+	{
+		sources = gameObject.GetComponents<AudioSource>();
+	}
+
 	void Update () 
     {
-        if(Input.GetButtonDown("Shot1"))
+        if(Input.GetButtonDown("Start"))
         {
-            SceneManager.LoadScene("Main");
+            StartCoroutine(WaitForStart());
         }
 	}
+
+    private IEnumerator WaitForStart()
+    {
+        sources[1].Play();
+        yield return new WaitForSeconds(0.5f);
+        SceneManager.LoadScene("Main");
+    }
 }
